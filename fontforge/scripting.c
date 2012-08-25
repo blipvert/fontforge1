@@ -4526,15 +4526,22 @@ static ItalicInfo default_ii = {
 };
 
 static void bItalic(Context *c) {
-    int i;
-
-    if ( c->a.argc>2 )
+    if ( c->a.argc>3 )
 	ScriptError( c, "Wrong number of arguments");
-    for ( i=1; i<c->a.argc; ++i ) {
-	if ( c->a.vals[i].type==v_real )
-	    default_ii.italic_angle = c->a.vals[i].u.fval;
-	else if ( c->a.vals[i].type==v_int )
-	    default_ii.italic_angle = c->a.vals[i].u.ival;
+
+    if ( c->a.argc>1) {
+	if ( c->a.vals[1].type==v_real )
+	    default_ii.italic_angle = c->a.vals[1].u.fval;
+	else if ( c->a.vals[1].type==v_int )
+	    default_ii.italic_angle = c->a.vals[1].u.ival;
+	else
+	    ScriptError(c,"Bad argument type in Italic");
+    }
+    if ( c->a.argc>2) {
+	if ( c->a.vals[1].type==v_real )
+	    default_ii.xheight_percent = c->a.vals[1].u.fval;
+	else if ( c->a.vals[1].type==v_int )
+	    default_ii.xheight_percent = c->a.vals[1].u.ival;
 	else
 	    ScriptError(c,"Bad argument type in Italic");
     }
