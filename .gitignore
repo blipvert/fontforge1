@@ -18,4 +18,5 @@ systemspecific
 *.lo
 *.mo
 *.o
+*.d
 *~
