@@ -9,6 +9,7 @@ fontforge.pc
 fontforge/sfddiff
 inc/config.h
 libtool
+VERSION
 Makefile
 Makefile.in
 pyhook/setup.py
