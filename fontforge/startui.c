@@ -48,6 +48,7 @@
 #endif
 #ifdef __Mac
 # include </Developer/Headers/FlatCarbon/Files.h>
+# define AnchorPoint	MacAnchorPoint
 # define FontInfo	MacFontInfo
 # define KernPair	MacKernPair
 # include </Developer/Headers/FlatCarbon/CarbonEvents.h>
