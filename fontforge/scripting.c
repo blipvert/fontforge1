@@ -4526,7 +4526,9 @@ static ItalicInfo default_ii = {
 };
 
 static void bItalic(Context *c) {
-    if ( c->a.argc>3 )
+    double pct = 1.0;
+    
+    if ( c->a.argc>8 )
 	ScriptError( c, "Wrong number of arguments");
 
     if ( c->a.argc>1) {
@@ -4535,7 +4537,7 @@ static void bItalic(Context *c) {
 	else if ( c->a.vals[1].type==v_int )
 	    default_ii.italic_angle = c->a.vals[1].u.ival;
 	else
-	    ScriptError(c,"Bad argument type in Italic");
+	    ScriptError(c,"Bad argument 1 type in Italic");
     }
     if ( c->a.argc>2) {
 	if ( c->a.vals[2].type==v_real )
@@ -4543,8 +4545,60 @@ static void bItalic(Context *c) {
 	else if ( c->a.vals[2].type==v_int )
 	    default_ii.xheight_percent = c->a.vals[2].u.ival;
 	else
-	    ScriptError(c,"Bad argument type in Italic");
+	    ScriptError(c,"Bad argument 2 type in Italic");
     }
+    if ( c->a.argc>3) {
+	if ( c->a.vals[3].type==v_real )
+	    pct = c->a.vals[3].u.fval;
+	else if ( c->a.vals[3].type==v_int )
+	    pct = c->a.vals[3].u.ival;
+	else
+	    ScriptError(c,"Bad argument 3 type in Italic");
+	default_ii.lc.lsb_percent = default_ii.lc.rsb_percent = 
+	    default_ii.uc.lsb_percent = default_ii.uc.rsb_percent = 
+	    default_ii.neither.lsb_percent =
+	    default_ii.neither.rsb_percent = pct;
+    }    
+    if ( c->a.argc>4) {
+	if ( c->a.vals[4].type==v_real )
+	    pct = c->a.vals[4].u.fval;
+	else if ( c->a.vals[4].type==v_int )
+	    pct = c->a.vals[4].u.ival;
+	else
+	    ScriptError(c,"Bad argument 4 type in Italic");
+	default_ii.lc.stem_percent =
+	    default_ii.uc.stem_percent =
+	    default_ii.neither.stem_percent = pct;
+    }    
+    if ( c->a.argc>5) {
+	if ( c->a.vals[5].type==v_real )
+	    pct = c->a.vals[5].u.fval;
+	else if ( c->a.vals[5].type==v_int )
+	    pct = c->a.vals[5].u.ival;
+	else
+	    ScriptError(c,"Bad argument 5 type in Italic");
+	default_ii.lc.counter_percent =
+	    default_ii.uc.counter_percent =
+	    default_ii.neither.counter_percent = pct;
+    }    
+    if ( c->a.argc>6) {
+	if ( c->a.vals[6].type==v_real )
+	    pct = c->a.vals[6].u.fval;
+	else if ( c->a.vals[6].type==v_int )
+	    pct = c->a.vals[6].u.ival;
+	else
+	    ScriptError(c,"Bad argument 6 type in Italic");
+	default_ii.lc.stem_percent = pct;
+    }    
+    if ( c->a.argc>7) {
+	if ( c->a.vals[7].type==v_real )
+	    pct = c->a.vals[7].u.fval;
+	else if ( c->a.vals[7].type==v_int )
+	    pct = c->a.vals[7].u.ival;
+	else
+	    ScriptError(c,"Bad argument 7 type in Italic");
+	default_ii.lc.counter_percent = pct;
+    }    
     MakeItalic(c->curfv,NULL,&default_ii);
 }
 
