@@ -4538,10 +4538,10 @@ static void bItalic(Context *c) {
 	    ScriptError(c,"Bad argument type in Italic");
     }
     if ( c->a.argc>2) {
-	if ( c->a.vals[1].type==v_real )
-	    default_ii.xheight_percent = c->a.vals[1].u.fval;
-	else if ( c->a.vals[1].type==v_int )
-	    default_ii.xheight_percent = c->a.vals[1].u.ival;
+	if ( c->a.vals[2].type==v_real )
+	    default_ii.xheight_percent = c->a.vals[2].u.fval;
+	else if ( c->a.vals[2].type==v_int )
+	    default_ii.xheight_percent = c->a.vals[2].u.ival;
 	else
 	    ScriptError(c,"Bad argument type in Italic");
     }
