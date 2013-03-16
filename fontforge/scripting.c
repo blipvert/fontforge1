@@ -42,6 +42,7 @@
 #ifdef HAVE_IEEEFP_H
 # include <ieeefp.h>		/* Solaris defines isnan in ieeefp rather than math.h */
 #endif
+#define USE_READLINE
 #ifdef USE_READLINE
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -8362,6 +8363,9 @@ static int __AddScriptLine(FILE *script, const char *line)
 	return -1;
 
     fputs(line, script);
+#ifdef USE_READLINE
+    fputs("\n", script);
+#endif
     fsetpos(script, &pos);
     return getc(script);
 }
@@ -8372,7 +8376,8 @@ static int __cgetc(Context *c) {
 
 	if ((ch = getc(c->script)) < 0) {
 #ifdef USE_READLINE
-	    char *line = readline(">> ");
+	    char *line;
+	    line = readline(">> ");
 	    if (line) {
 		ch = __AddScriptLine(c->script, line);
 		add_history(line);
@@ -9796,6 +9801,7 @@ void ff_statement(Context *c) {
     enum token_type tok = ff_NextToken(c);
     Val val;
 
+    c->return_val.type = v_void;
     if ( tok==tt_while )
 	dowhile(c);
     else if ( tok==tt_foreach )
@@ -9825,9 +9831,19 @@ void ff_statement(Context *c) {
 	ff_backuptok(c);
     } else {
 	ff_backuptok(c);
-	expr(c,&val);
-	if ( val.type == v_str )
-	    free( val.u.sval );
+	if (c->interactive) {
+	    c->return_val.type = v_void;
+	    expr(c,&c->return_val);
+	    dereflvalif(&c->return_val);
+	    if ( c->return_val.type==v_arr ) {
+		c->return_val.type = v_arrfree;
+		c->return_val.u.aval = arraycopy(c->return_val.u.aval);
+	    }
+	} else {
+	    expr(c,&val);
+	    if ( val.type == v_str )
+		free( val.u.sval );
+	}
     }
     tok = ff_NextToken(c);
     if ( tok!=tt_eos && tok!=tt_eof && !c->returned && !c->broken )
@@ -9943,6 +9959,12 @@ void ProcessNativeScript(int argc, char *argv[], FILE *script) {
 	while ( !c.returned && !c.broken && (tok = ff_NextToken(&c))!=tt_eof ) {
 	    ff_backuptok(&c);
 	    ff_statement(&c);
+	    if (c.return_val.type != v_void) {
+		printf(" -> ");
+		PrintVal(&c.return_val);
+		printf("\n");
+		fflush(stdout);
+	    }
 	}
 	fclose(c.script);
     }
